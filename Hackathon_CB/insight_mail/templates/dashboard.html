@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Insight Mail - Enterprise Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .risk-high { background-color: #ffe6e6; border-left: 5px solid red; }
+        .risk-low { background-color: #e6ffe6; border-left: 5px solid green; }
+    </style>
+</head>
+<body class="bg-light">
+
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Insight Mail <span class="text-muted fs-5">Enterprise Analytics</span></h1>
+        <div>
+            <span class="badge bg-danger p-2">High Risk: {{ high_risk_count }}</span>
+            <span class="badge bg-primary p-2">Total: {{ total_emails }}</span>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header">Incoming Communications</div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Subject</th>
+                                <th>Sender</th>
+                                <th>Status</th>
+                                <th>AI Insights</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for email in emails %}
+                            <tr class="{% if email.analysis.risk_score > 50 %}risk-high{% elif email.is_analyzed %}risk-low{% endif %}">
+                                <td><strong>{{ email.subject }}</strong></td>
+                                <td>{{ email.sender }}</td>
+                                <td>
+                                    {% if email.is_analyzed %}
+                                        <span class="badge bg-success">Analyzed</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Pending</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if email.is_analyzed %}
+                                        Risk: {{ email.analysis.risk_score }}/100 <br>
+                                        <small class="text-muted">{{ email.analysis.tone }} | {{ email.analysis.sentiment }}</small>
+                                    {% else %}
+                                        <small class="text-muted">Waiting for AI...</small>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'analyze_email' email.id %}" class="btn btn-sm btn-primary">
+                                        {% if email.is_analyzed %} Re-Analyze {% else %} Analyze Now {% endif %}
+                                    </a>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center p-4">No emails found. Add some via Admin Panel!</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
