@@ -9,7 +9,7 @@ from .keywords import DANGER_KEYWORDS, COMPLAINT_KEYWORDS, FINANCE_KEYWORDS
 # ---------------------------------------------------------
 # CONFIGURATION: API SETUP (Only for Drafting)
 # ---------------------------------------------------------
-GOOGLE_API_KEY = "AIzaSyDGsKNjOPjFQkuQub0vyz-2V3R-VN-4m64" # <--- PASTE KEY HERE
+GOOGLE_API_KEY = "YOUR_API_KEY" # <--- PASTE KEY HERE
 genai.configure(api_key=GOOGLE_API_KEY)
 
 def analyze_email_content(subject, body, history=[], agent_name="Support Team"):
@@ -135,4 +135,5 @@ def analyze_email_content(subject, body, history=[], agent_name="Support Team"):
         "flagged_keywords": flagged_display,
         "suggested_category": category,
         "suggested_reply": draft_reply # <--- This now comes from Gemini
+
     }
